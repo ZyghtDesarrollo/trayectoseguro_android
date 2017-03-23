@@ -12,7 +12,7 @@ import android.view.View;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int   SPLASH_TIME_OUT= 3000;
+    private static final int   SPLASH_TIME_OUT= 1000;
 
 
 
@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                Intent i = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(i);
 
                 // close this activity

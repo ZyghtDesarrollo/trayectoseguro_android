@@ -2,7 +2,7 @@
     <string name="app_name">TrayectoSeguro</string>
     <string name="title_activity_maps">Map</string>
 
-    <string name="title_activity_splash">SplashActivity</string>
+
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="prompt_email">Email</string>
@@ -16,5 +16,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-
+    <string name="finish">Terminar</string>
+    <string name="title_activity_summary">SummaryActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>
