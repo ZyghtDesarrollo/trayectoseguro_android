@@ -89,7 +89,8 @@ public class ServerCommunication {
 
             if (isNeedSession) {
                 Session session = Session.getInstance();
-                httpClient.addHeader("Authorization", "Bearer " + session.getAccessToken());
+                httpClient.addHeader("Authorization", "" + session.getAccessToken());
+                Log.d(TAG, "Authorization "+ session.getAccessToken());
             }
 
 

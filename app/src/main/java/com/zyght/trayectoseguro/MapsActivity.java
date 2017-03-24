@@ -85,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //takeRide = (Button)findViewById(R.id.take_ride);
         // addListenerOnButton();
 
-        travel = new Travel();
+        travel = Travel.getInstance();
 
         Answer ans = new Answer();
         ans.setQuestionId(1);

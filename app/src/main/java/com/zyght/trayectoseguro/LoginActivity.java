@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -26,6 +27,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.zyght.trayectoseguro.handler.LoginAPIHandler;
+import com.zyght.trayectoseguro.network.ResponseActionDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +40,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, ResponseActionDelegate {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -59,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private EditText mCodeiew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
+        mCodeiew = (EditText) findViewById(R.id.code);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -157,16 +164,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -175,9 +172,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+
+            String code = mCodeiew.getText().toString();
+
+            //TODO:
+
+            //email= "Daniel 2";
+            //password = "1234";
+            //code = "3";
+
+            LoginAPIHandler resourceHandler = new LoginAPIHandler(email, password, code);
+            resourceHandler.setRequestHandle(this, this);
         }
     }
 
@@ -188,7 +193,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 1;
     }
 
     /**
@@ -268,6 +273,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    @Override
+    public void didSuccessfully(String message) {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+
+        // close this activity
+        finish();
+    }
+
+    @Override
+    public void didNotSuccessfully(String message) {
+        Toast.makeText(this, "El nombre de usuario, la clave o el código de empresa son incorrectos", Toast.LENGTH_SHORT).show();
     }
 
 

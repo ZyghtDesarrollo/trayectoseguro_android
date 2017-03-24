@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Durmio la menos 6 horas antes de comenzar su trayecto?"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/toggleText"/>
+
+
+    <ToggleButton
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/toggleText"
+        android:textOff="No"
+        android:textOn="Si"
+        android:layout_alignParentRight="true"
+
+/>
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿He conducido menos de 3 horas continuas hasta el momento?"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/toggleText2"
+        android:layout_below="@+id/textView"/>
+
+
+    <ToggleButton
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/toggleText2"
+        android:textOff="No"
+        android:textOn="Si"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/toggleText"
+
+        />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Apliqué la lista de chequeo para vehículos livianos?"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/toggleText3"
+        android:layout_below="@+id/textView2"/>
+
+
+    <ToggleButton
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/toggleText3"
+        android:textOff="No"
+        android:textOn="Si"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:layout_below="@+id/toggleText2"
+
+        />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Sé que no debo usar mi teléfono móvil u otro aparato mientras conduzco?"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/toggleText4"
+        android:layout_below="@+id/textView3"/>
+
+
+    <ToggleButton
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/toggleText4"
+        android:textOff="No"
+        android:textOn="Si"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/toggleText3"
+
+        />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/report_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/corporate_color"
+        android:padding="12dp"
+        android:text="@string/save_and_continue"
+        android:textColor="@android:color/white"
+        android:layout_margin="40dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        />
+
+
+</RelativeLayout>

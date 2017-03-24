@@ -15,7 +15,22 @@ import java.util.UUID;
 
 public class Travel {
 
+
+    private static final Travel ourInstance = new Travel();
+
+    public static Travel getInstance() {
+        return ourInstance;
+    }
+
+    private Travel() {
+    }
+
     private ArrayList<LocationLog> locationLogs = new ArrayList<>();
+
+    public ArrayList<Answer> getAnswers() {
+        return answers;
+    }
+
     private ArrayList<Answer> answers = new ArrayList<>();
 
 
@@ -46,5 +61,10 @@ public class Travel {
         log.setDate(reportDate);
 
         locationLogs.add(log);
+    }
+
+    public void clear() {
+        locationLogs.clear();
+        answers.clear();
     }
 }

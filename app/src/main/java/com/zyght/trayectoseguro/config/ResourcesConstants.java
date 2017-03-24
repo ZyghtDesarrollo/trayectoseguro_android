@@ -6,4 +6,5 @@ package com.zyght.trayectoseguro.config;
 
 public class ResourcesConstants {
     public static final String BASE_URL = "";
+    public  static boolean startTravel = false;
 }

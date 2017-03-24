@@ -3,15 +3,20 @@ package com.zyght.trayectoseguro;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,16 +39,23 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
+import com.zyght.trayectoseguro.config.ResourcesConstants;
 import com.zyght.trayectoseguro.entity.Travel;
+import com.zyght.trayectoseguro.handler.AddTravelAPIHandler;
+import com.zyght.trayectoseguro.handler.LoginAPIHandler;
+import com.zyght.trayectoseguro.network.ResponseActionDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by Arley Mauricio Duarte on 3/21/17.
  */
 
-public class MapViewFragment extends Fragment  implements LocationListener,   GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapViewFragment extends Fragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResponseActionDelegate {
     MapView mMapView;
     private GoogleMap googleMap;
     private Context context;
@@ -56,11 +68,11 @@ public class MapViewFragment extends Fragment  implements LocationListener,   Go
     LocationRequest mLocationRequest;
 
 
-
     GoogleApiClient mGoogleApiClient;
 
 
     private static final int INITIAL_STROKE_WIDTH_PX = 15;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_maps_f, container, false);
@@ -71,7 +83,10 @@ public class MapViewFragment extends Fragment  implements LocationListener,   Go
         mMapView.onResume(); // needed to get the map to display immediately
 
         context = getActivity().getBaseContext();
-        travel = new Travel();
+
+
+
+
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -86,21 +101,25 @@ public class MapViewFragment extends Fragment  implements LocationListener,   Go
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                     googleMap.setMyLocationEnabled(true);
+                    setUpMap();
                 } else {
                     Toast.makeText(getActivity(), "You have to accept to enjoy all app's services!", Toast.LENGTH_LONG).show();
                     if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
                         googleMap.setMyLocationEnabled(true);
 
+
                     }
                 }
+
+                /*
                 LatLng sydney = new LatLng(-34, 151);
                 googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
 
                 // For zooming automatically to the location of the marker
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+*/
 
                 buildGoogleApiClient();
 
@@ -108,7 +127,99 @@ public class MapViewFragment extends Fragment  implements LocationListener,   Go
             }
         });
 
+
+        final AppCompatButton button = (AppCompatButton) rootView.findViewById(R.id.report_button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+                ResourcesConstants.startTravel = false;
+
+                if(button.getText().equals(getString(R.string.start))){
+
+                    travel = Travel.getInstance();
+                    travel.clear();
+
+                    Intent i = new Intent(getActivity(), SurveyActivity.class);
+                    startActivity(i);
+                    button.setText(getString(R.string.finish));
+
+                }else{
+
+                    //Intent i = new Intent(getActivity(), SummaryActivity.class);
+                    //startActivity(i);
+                    reportOnClick();
+                    button.setText(getString(R.string.start));
+                }
+
+
+            }
+
+
+        });
+
         return rootView;
+    }
+
+    private void reportOnClick() {
+
+        Gson gson = new Gson();
+
+        String answers = gson.toJson(travel.getAnswers());
+        String logs = gson.toJson(travel.getLocationLogs());
+
+        Toast.makeText(context,logs,Toast.LENGTH_SHORT).show();
+
+        AddTravelAPIHandler resourceHandler = new AddTravelAPIHandler(answers, logs);
+        resourceHandler.setRequestHandle(this, getActivity());
+
+
+
+    }
+
+
+
+
+
+    private void setUpMap() {
+        // Enable MyLocation Layer of Google Map
+
+
+        // Get LocationManager object from System Service LOCATION_SERVICE
+        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+
+        // Create a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+
+        // Get the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        /* Get Current Location */
+
+
+        Location myLocation = locationManager.getLastKnownLocation(provider);
+
+
+        if(myLocation != null){
+            double latitude = myLocation.getLatitude();
+
+            // Get longitude of the current location
+            double longitude = myLocation.getLongitude();
+
+            // Create a LatLng object for the current location
+            LatLng latLng = new LatLng(latitude, longitude);
+
+            // Show the current location in Google Map
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+            // Zoom in the Google Map
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(1));
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
+        }
+
+        // Get latitude of the current location
+
     }
 
     @Override
@@ -148,31 +259,34 @@ public class MapViewFragment extends Fragment  implements LocationListener,   Go
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocation = googleMap.addMarker(markerOptions);
 
+        if(ResourcesConstants.startTravel){
+            if(points.size() > 0){
+                LatLng lastPosition = points.get(points.size()-1);
+                float[] results = new float[1];
+                Location.distanceBetween(lastPosition.latitude, lastPosition.longitude, latLng.latitude, latLng.longitude, results);
+
+                Toast.makeText(context,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
+
+                if(results[0] > 1.0){
+                    points.add(latLng);
+                    //TODO:
+                    points.add(latLng);
+                    updatePolyline();
+
+                    travel.addLocationLog(latLng);
+
+                }
 
 
-
-        if(points.size() > 0){
-            LatLng lastPosition = points.get(points.size()-1);
-            float[] results = new float[1];
-            Location.distanceBetween(lastPosition.latitude, lastPosition.longitude, latLng.latitude, latLng.longitude, results);
-
-            Toast.makeText(context,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
-
-            if(results[0] > 0.0){
+            }else{
                 points.add(latLng);
-
 
             }
 
-
-        }else{
-            points.add(latLng);
-
         }
 
-        updatePolyline();
 
-        travel.addLocationLog(latLng);
+
     }
 
     private void updatePolyline(){
@@ -256,5 +370,13 @@ public class MapViewFragment extends Fragment  implements LocationListener,   Go
     }
 
 
+    @Override
+    public void didSuccessfully(String message) {
+        Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void didNotSuccessfully(String message) {
+        Toast.makeText(context,"onConnectionFailed:"+message,Toast.LENGTH_SHORT).show();
+    }
 }
