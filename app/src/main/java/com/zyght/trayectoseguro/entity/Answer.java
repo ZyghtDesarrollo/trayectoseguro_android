@@ -5,15 +5,15 @@ package com.zyght.trayectoseguro.entity;
  */
 
 public class Answer {
-    private int questionId;
+    private int question_id;
     private String value;
 
     public int getQuestionId() {
-        return questionId;
+        return question_id;
     }
 
     public void setQuestionId(int questionId) {
-        this.questionId = questionId;
+        this.question_id = questionId;
     }
 
     public String getValue() {

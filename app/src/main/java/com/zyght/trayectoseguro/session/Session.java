@@ -4,6 +4,7 @@ package com.zyght.trayectoseguro.session;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.zyght.trayectoseguro.entity.User;
 
 
 public class Session {
@@ -13,6 +14,17 @@ public class Session {
     private static final String PREFS_NAME = "Session";
     private static final String TOKEN_NAME = "token";
     private static Session ourInstance = new Session();
+
+    private User user;
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public static Session getInstance() {
         return ourInstance;

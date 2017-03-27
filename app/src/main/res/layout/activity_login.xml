@@ -81,14 +81,18 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/report_button"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:background="@color/corporate_color"
+                android:padding="12dp"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                android:textColor="@android:color/white"
+                android:layout_margin="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentBottom="true"
+                />
 
         </LinearLayout>
     </ScrollView>

@@ -11,14 +11,11 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +32,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -45,7 +41,6 @@ import com.google.gson.Gson;
 import com.zyght.trayectoseguro.config.ResourcesConstants;
 import com.zyght.trayectoseguro.entity.Travel;
 import com.zyght.trayectoseguro.handler.AddTravelAPIHandler;
-import com.zyght.trayectoseguro.handler.LoginAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
 
 import java.util.ArrayList;
@@ -57,7 +52,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by Arley Mauricio Duarte on 3/21/17.
  */
 
-public class MapViewFragment extends Fragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResponseActionDelegate {
+public class STListFragment extends Fragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResponseActionDelegate {
     MapView mMapView;
     private GoogleMap googleMap;
     private Context context;
@@ -201,7 +196,7 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
         String answers = gson.toJson(travel.getAnswers());
         String logs = gson.toJson(travel.getLocationLogs());
 
-        //Toast.makeText(context,logs,Toast.LENGTH_SHORT).show();
+        Toast.makeText(context,logs,Toast.LENGTH_SHORT).show();
 
         AddTravelAPIHandler resourceHandler = new AddTravelAPIHandler(answers, logs);
         resourceHandler.setRequestHandle(this, getActivity());
@@ -294,16 +289,15 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
                 float[] results = new float[1];
                 Location.distanceBetween(lastPosition.latitude, lastPosition.longitude, latLng.latitude, latLng.longitude, results);
 
-                //Toast.makeText(context,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
 
                 if(results[0] > 1.0){
+                    points.add(latLng);
+                    //TODO:
+                    points.add(latLng);
+                    updatePolyline();
 
-                    if(latLng !=null){
-                        points.add(latLng);
-                        updatePolyline();
-                        travel.addLocationLog(latLng);
-                    }
-
+                    travel.addLocationLog(latLng);
 
                 }
 

@@ -14,10 +14,13 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.zyght.trayectoseguro.dummy.DummyContent;
+import com.zyght.trayectoseguro.entity.TravelItem;
+import com.zyght.trayectoseguro.session.Session;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
-    private TextView mTextMessage;
+   // private TextView mTextMessage;
 
     private SupportMapFragment mSupportMapFragment;
 
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         MapViewFragment fra = new MapViewFragment();
 
-        fragmentTransaction.add(R.id.content, fra);
+        fragmentTransaction.replace(R.id.content, fra);
         fragmentTransaction.commit();
 
 
@@ -41,6 +44,39 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initialiseList() {
+
+
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        ItemFragment fra =   ItemFragment.newInstance(1);
+
+        fragmentTransaction.replace(R.id.content, fra);
+        fragmentTransaction.commit();
+
+
+
+
+    }
+
+
+    private void initializeProfile() {
+
+
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        ProfileFragment fra =   new ProfileFragment();
+
+        fragmentTransaction.replace(R.id.content, fra);
+        fragmentTransaction.commit();
+
+
+
+
+    }
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -48,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.profile);
+                    initializeProfile();
                     return true;
                 case R.id.navigation_dashboard:
                     //mTextMessage.setText(R.string.title_dashboard);
@@ -57,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.my_trips);
+                    initialiseList();
                     return true;
             }
             return false;
@@ -73,9 +109,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+       // mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        initializeProfile();
     }
 
+    @Override
+    public void onListFragmentInteraction(TravelItem item) {
+
+    }
 }

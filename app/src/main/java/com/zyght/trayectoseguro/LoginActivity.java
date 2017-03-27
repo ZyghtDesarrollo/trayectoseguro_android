@@ -17,6 +17,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,6 +30,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zyght.trayectoseguro.config.ResourcesConstants;
+import com.zyght.trayectoseguro.entity.Travel;
 import com.zyght.trayectoseguro.handler.LoginAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
 
@@ -87,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        AppCompatButton mEmailSignInButton = (AppCompatButton) findViewById(R.id.report_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,6 +100,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+
+
+
     }
 
     private void populateAutoComplete() {
@@ -175,11 +182,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             String code = mCodeiew.getText().toString();
 
-            //TODO:
-
-            //email= "Daniel 2";
-            //password = "1234";
-            //code = "3";
+            if (BuildConfig.DEBUG) {
+                email= "Daniel 2";
+                password = "1234";
+                code = "3";
+            }
 
             LoginAPIHandler resourceHandler = new LoginAPIHandler(email, password, code);
             resourceHandler.setRequestHandle(this, this);

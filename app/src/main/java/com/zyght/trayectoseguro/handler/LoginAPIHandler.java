@@ -1,7 +1,9 @@
 package com.zyght.trayectoseguro.handler;
 
 
+import com.google.gson.Gson;
 import com.zyght.trayectoseguro.config.ResourcesConstants;
+import com.zyght.trayectoseguro.entity.User;
 import com.zyght.trayectoseguro.network.APIResourceHandler;
 import com.zyght.trayectoseguro.network.APIResponse;
 import com.zyght.trayectoseguro.network.HttpMethod;
@@ -49,7 +51,8 @@ public class LoginAPIHandler extends APIResourceHandler {
 
         if (apiResponse.getStatus().isSuccess()) {
             extractToken(apiResponse.getRawResponse());
-            getResponseActionDelegate().didSuccessfully("");
+            GetQuestionsAPIHandler getQuestionsAPIHandler = new GetQuestionsAPIHandler();
+            getQuestionsAPIHandler.setRequestHandle(getResponseActionDelegate(), getContext());
         } else {
             getResponseActionDelegate().didNotSuccessfully(apiResponse.getStatus().getErrorCode());
         }
@@ -64,6 +67,12 @@ public class LoginAPIHandler extends APIResourceHandler {
         try {
             JSONObject object = new JSONObject(apiResponse);
             token = object.getString("access_token");
+
+
+            Gson gson = new Gson();
+
+            User user = gson.fromJson(object.getString("user"), User.class);
+            Session.getInstance().setUser(user);
 
         } catch (JSONException e) {
 

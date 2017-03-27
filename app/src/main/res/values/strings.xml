@@ -24,4 +24,6 @@
     <string name="title_survey">Cuestionario Inicial</string>
     <string name="save_and_continue">Guardar y Continuar</string>
     <string name="promt_code">Código de Empresa</string>
+    <string name="ok">Si</string>
+    <string name="cancel">No</string>
 </resources>
