@@ -2,6 +2,8 @@ package com.zyght.trayectoseguro;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,10 +45,15 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.zyght.trayectoseguro.config.ResourcesConstants;
+import com.zyght.trayectoseguro.entity.Summary;
 import com.zyght.trayectoseguro.entity.Travel;
+import com.zyght.trayectoseguro.entity.TravelItem;
 import com.zyght.trayectoseguro.handler.AddTravelAPIHandler;
 import com.zyght.trayectoseguro.handler.LoginAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +76,7 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
     Marker mCurrLocation;
     LocationRequest mLocationRequest;
 
-
+    private  AppCompatButton button;
     GoogleApiClient mGoogleApiClient;
 
 
@@ -130,7 +137,7 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
         });
 
 
-        final AppCompatButton button = (AppCompatButton) rootView.findViewById(R.id.report_button);
+        button = (AppCompatButton) rootView.findViewById(R.id.report_button);
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -139,9 +146,8 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
                 ResourcesConstants.startTravel = false;
 
                 if(button.getText().equals(getString(R.string.start))){
-
                     travel = Travel.getInstance();
-                    travel.clear();
+
 
                     Intent i = new Intent(getActivity(), SurveyActivity.class);
                     startActivity(i);
@@ -152,7 +158,7 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
                     //Intent i = new Intent(getActivity(), SummaryActivity.class);
                     //startActivity(i);
                     reportOnClick();
-                    button.setText(getString(R.string.start));
+
                 }
 
 
@@ -402,11 +408,49 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
 
     @Override
     public void didSuccessfully(String message) {
-        Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+
+        travel.clear();
+        button.setText(getString(R.string.start));
+        points.clear();
+        googleMap.clear();
+
+
+
+
+        try {
+            JSONObject object = new JSONObject(message);
+            String response = object.getString("response");
+
+            Gson gson = new Gson();
+
+            Summary summary = gson.fromJson(response, Summary.class);
+            travel.setSummary(summary);
+
+
+
+        } catch (Exception e) {
+
+        }
+
+        showDialog();
     }
 
     @Override
     public void didNotSuccessfully(String message) {
         Toast.makeText(context,"onConnectionFailed:"+message,Toast.LENGTH_SHORT).show();
+    }
+
+    public void showDialog() {
+        FragmentManager fragmentManager = getFragmentManager();
+        SummaryDialogFragment newFragment = new SummaryDialogFragment();
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        // For a little polish, specify a transition animation
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        // To make it fullscreen, use the 'content' root view as the container
+        // for the fragment, which is always the root view for the activity
+        transaction.add(android.R.id.content, newFragment)
+                .addToBackStack(null).commit();
     }
 }

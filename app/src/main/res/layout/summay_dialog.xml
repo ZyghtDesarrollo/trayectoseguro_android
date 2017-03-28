@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+  >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textView1"
+                android:text="Duración"
+                style="@style/title_summary" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_below="@+id/textView1"
+                android:text="0.0:00"
+                style="@style/kpi_summary" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_below="@+id/textView2"
+                android:text="Horas"
+                style="@style/unit_summary" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textView11"
+                android:text="Distancia"
+                style="@style/title_summary" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_below="@+id/textView11"
+                android:text="0.0.00"
+                style="@style/kpi_summary" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_below="@+id/textView12"
+                android:text="Km"
+                style="@style/unit_summary" />
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/textView21"
+            android:text="Velocidad Promedio"
+            style="@style/title_summary" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_below="@+id/textView21"
+            android:text="0.0.00"
+            style="@style/kpi_summary" />
+
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_below="@+id/textView22"
+            android:text="Km/H"
+            style="@style/unit_summary" />
+
+    </RelativeLayout>
+</LinearLayout>

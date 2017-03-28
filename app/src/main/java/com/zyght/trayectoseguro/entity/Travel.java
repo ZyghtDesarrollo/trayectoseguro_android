@@ -16,6 +16,28 @@ import java.util.UUID;
 public class Travel {
 
 
+    private Summary summary;
+
+    public Summary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(Summary summary) {
+        this.summary = summary;
+    }
+
+    public static Travel getOurInstance() {
+        return ourInstance;
+    }
+
+    public void setLocationLogs(ArrayList<LocationLog> locationLogs) {
+        this.locationLogs = locationLogs;
+    }
+
+    public void setAnswers(ArrayList<Answer> answers) {
+        this.answers = answers;
+    }
+
     private static final Travel ourInstance = new Travel();
 
     public static Travel getInstance() {
