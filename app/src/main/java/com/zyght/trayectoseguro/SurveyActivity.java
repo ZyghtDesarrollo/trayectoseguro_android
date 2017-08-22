@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.zyght.trayectoseguro.config.ResourcesConstants;
+import com.zyght.trayectoseguro.driver_services.DriverTracker;
 import com.zyght.trayectoseguro.entity.Answer;
 import com.zyght.trayectoseguro.entity.Question;
 import com.zyght.trayectoseguro.entity.QuestionBLL;
@@ -72,7 +73,7 @@ public class SurveyActivity extends AppCompatActivity {
 
         }
 
-
+        DriverTracker.getInstance().setTripStatus(DriverTracker.ON_TRIP);
         finish();
 
     }

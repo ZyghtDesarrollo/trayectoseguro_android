@@ -79,7 +79,7 @@ public class Travel {
 
         String reportDate = df.format(today);
 
-
+        log.setTimeStamp(System.currentTimeMillis());
         log.setDate(reportDate);
 
         locationLogs.add(log);

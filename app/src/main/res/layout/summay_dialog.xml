@@ -40,24 +40,84 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="200dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView11"
+                style="@style/title_summary"
+                android:text="Distancia" />
+
+            <TextView
+                android:id="@+id/textView12"
+                style="@style/kpi_summary"
+                android:layout_below="@+id/textView11"
+                android:text="0.0.00" />
+
+            <TextView
+                android:id="@+id/textView13"
+                style="@style/unit_summary"
+                android:layout_below="@+id/textView12"
+                android:text="Km" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="200dp"
             android:orientation="vertical"
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/textView11"
-                android:text="Distancia"
+                android:id="@+id/textView21"
+                android:text="Velocidad Promedio"
                 style="@style/title_summary" />
 
             <TextView
-                android:id="@+id/textView12"
-                android:layout_below="@+id/textView11"
+                android:id="@+id/textView22"
+                android:layout_below="@+id/textView21"
                 android:text="0.0.00"
                 style="@style/kpi_summary" />
 
             <TextView
-                android:id="@+id/textView13"
-                android:layout_below="@+id/textView12"
-                android:text="Km"
+                android:id="@+id/textView23"
+                android:layout_below="@+id/textView22"
+                android:text="Km/H"
+                style="@style/unit_summary" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textViewV"
+                android:text="Velocidad Máxima"
+                style="@style/title_summary" />
+
+            <TextView
+                android:id="@+id/textViewMaxSpeed"
+                android:layout_below="@+id/textViewV"
+                android:text="0.0.00"
+                style="@style/kpi_summary" />
+
+            <TextView
+                android:id="@+id/textView1323"
+                android:layout_below="@+id/textViewMaxSpeed"
+                android:text="Km / h"
                 style="@style/unit_summary" />
 
         </RelativeLayout>
@@ -66,28 +126,5 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="vertical"
-        >
 
-        <TextView
-            android:id="@+id/textView21"
-            android:text="Velocidad Promedio"
-            style="@style/title_summary" />
-
-        <TextView
-            android:id="@+id/textView22"
-            android:layout_below="@+id/textView21"
-            android:text="0.0.00"
-            style="@style/kpi_summary" />
-
-        <TextView
-            android:id="@+id/textView23"
-            android:layout_below="@+id/textView22"
-            android:text="Km/H"
-            style="@style/unit_summary" />
-
-    </RelativeLayout>
 </LinearLayout>

@@ -85,9 +85,9 @@ public class LoginAPIHandler extends APIResourceHandler {
 
     @Override
     public String getServiceURL() {
-        //return ResourcesConstants.BASE_URL + "/token";
+        return ResourcesConstants.BASE_URL + "/ruser/login";
 
-        return "http://trayectoseguro.azurewebsites.net/index.php/api/ruser/login";
+        //return "http://trayectoseguro.azurewebsites.net/index.php/api/ruser/login";
     }
 
     @Override

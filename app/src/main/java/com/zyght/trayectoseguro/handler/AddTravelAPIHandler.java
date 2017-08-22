@@ -1,6 +1,10 @@
 package com.zyght.trayectoseguro.handler;
 
 
+import android.util.Log;
+
+import com.zyght.trayectoseguro.config.ResourcesConstants;
+import com.zyght.trayectoseguro.driver_services.DriverTracker;
 import com.zyght.trayectoseguro.network.APIResourceHandler;
 import com.zyght.trayectoseguro.network.APIResponse;
 import com.zyght.trayectoseguro.network.HttpMethod;
@@ -19,6 +23,7 @@ import java.util.List;
  */
 
 public class AddTravelAPIHandler extends APIResourceHandler {
+    private static final String TAG = "AddTravelAPIHandler";
     private String answers;
     private String travel_logs;
 
@@ -37,6 +42,12 @@ public class AddTravelAPIHandler extends APIResourceHandler {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("answers", answers));
         nameValuePairs.add(new BasicNameValuePair("travel_logs", travel_logs));
+        nameValuePairs.add(new BasicNameValuePair("max_speed", DriverTracker.getInstance().getMaxSpeed()));
+        nameValuePairs.add(new BasicNameValuePair("distance", DriverTracker.getInstance().getDistanceKM()));
+        nameValuePairs.add(new BasicNameValuePair("average_speed", DriverTracker.getInstance().AverageSpeed()+""));
+        nameValuePairs.add(new BasicNameValuePair("duration", DriverTracker.getInstance().getTripTime()));
+
+        Log.d(TAG, travel_logs);
 
         return nameValuePairs;
     }
@@ -60,7 +71,7 @@ public class AddTravelAPIHandler extends APIResourceHandler {
     public String getServiceURL() {
         //return ResourcesConstants.BASE_URL + "/token";
 
-        return "http://trayectoseguro.azurewebsites.net/index.php/api/rtravel/add";
+        return ResourcesConstants.BASE_URL +"rtravel/add";
     }
 
     @Override

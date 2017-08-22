@@ -5,6 +5,6 @@ package com.zyght.trayectoseguro.config;
  */
 
 public class ResourcesConstants {
-    public static final String BASE_URL = "";
+    public static final String BASE_URL = "http://trayectoseguro.azurewebsites.net/index.php/api/";
     public  static boolean startTravel = false;
 }

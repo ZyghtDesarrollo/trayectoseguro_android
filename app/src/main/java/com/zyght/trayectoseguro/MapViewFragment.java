@@ -16,11 +16,9 @@ import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -45,14 +42,13 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.zyght.trayectoseguro.config.ResourcesConstants;
+import com.zyght.trayectoseguro.driver_services.DriverTracker;
+import com.zyght.trayectoseguro.driver_services.IDriverObserver;
 import com.zyght.trayectoseguro.entity.Summary;
 import com.zyght.trayectoseguro.entity.Travel;
-import com.zyght.trayectoseguro.entity.TravelItem;
 import com.zyght.trayectoseguro.handler.AddTravelAPIHandler;
-import com.zyght.trayectoseguro.handler.LoginAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -64,7 +60,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by Arley Mauricio Duarte on 3/21/17.
  */
 
-public class MapViewFragment extends Fragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResponseActionDelegate {
+public class MapViewFragment extends Fragment implements LocationListener, IDriverObserver, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResponseActionDelegate {
     MapView mMapView;
     private GoogleMap googleMap;
     private Context context;
@@ -85,6 +81,9 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_maps_f, container, false);
+
+        driverTracker.setContext(context);
+
 
         mMapView = (MapView) rootView.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
@@ -147,7 +146,7 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
 
                 if(button.getText().equals(getString(R.string.start))){
                     travel = Travel.getInstance();
-
+                    driverTracker.setTripStatus(DriverTracker.ON_TRIP);
 
                     Intent i = new Intent(getActivity(), SurveyActivity.class);
                     startActivity(i);
@@ -157,6 +156,8 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
 
                     //Intent i = new Intent(getActivity(), SummaryActivity.class);
                     //startActivity(i);
+                    button.setText(getString(R.string.start));
+                    driverTracker.setTripStatus(DriverTracker.CLOSED_TRIP);
                     reportOnClick();
 
                 }
@@ -166,6 +167,10 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
 
 
         });
+
+
+
+        driverTracker.register(this);
 
         return rootView;
     }
@@ -188,6 +193,7 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
+                driverTracker.clear();
             }
         });
 
@@ -253,6 +259,8 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
             googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
         }
 
+
+        driverTracker.drawRoute(googleMap);
         // Get latitude of the current location
 
     }
@@ -281,6 +289,8 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
         mMapView.onLowMemory();
     }
 
+    DriverTracker driverTracker =  DriverTracker.getInstance();
+
     @Override
     public void onLocationChanged(Location location) {
         //remove previous current location marker and add new one at current position
@@ -294,12 +304,24 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocation = googleMap.addMarker(markerOptions);
 
+        travel = Travel.getInstance();
+
+        if(latLng !=null){
+            travel.addLocationLog(latLng);
+        }
+
+
         if(ResourcesConstants.startTravel){
+
+
+            /*
+
+
             if(points.size() > 0){
                 LatLng lastPosition = points.get(points.size()-1);
                 float[] results = new float[1];
                 Location.distanceBetween(lastPosition.latitude, lastPosition.longitude, latLng.latitude, latLng.longitude, results);
-
+                double speed = driverTracker.speed(travel.getLocationLogs());
                 //Toast.makeText(context,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
 
                 if(results[0] > 1.0){
@@ -307,7 +329,7 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
                     if(latLng !=null){
                         points.add(latLng);
                         updatePolyline();
-                        travel.addLocationLog(latLng);
+
                     }
 
 
@@ -318,6 +340,8 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
                 points.add(latLng);
 
             }
+
+            */
 
         }
 
@@ -438,7 +462,8 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
 
     @Override
     public void didNotSuccessfully(String message) {
-        Toast.makeText(context,"onConnectionFailed:"+message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(context,"onConnectionFailed:"+message,Toast.LENGTH_SHORT).show();
+        showDialog();
     }
 
     public void showDialog() {
@@ -452,5 +477,15 @@ public class MapViewFragment extends Fragment implements LocationListener, Googl
         // for the fragment, which is always the root view for the activity
         transaction.add(android.R.id.content, newFragment)
                 .addToBackStack(null).commit();
+    }
+
+    @Override
+    public void updateSpeed(Double speed) {
+
+    }
+
+    @Override
+    public void updateTripStatus() {
+
     }
 }

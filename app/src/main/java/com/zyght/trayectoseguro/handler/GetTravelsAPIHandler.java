@@ -4,6 +4,7 @@ package com.zyght.trayectoseguro.handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zyght.trayectoseguro.config.ResourcesConstants;
 import com.zyght.trayectoseguro.entity.Question;
 import com.zyght.trayectoseguro.entity.QuestionBLL;
 import com.zyght.trayectoseguro.entity.TravelItem;
@@ -75,9 +76,9 @@ public class GetTravelsAPIHandler extends APIResourceHandler {
 
     @Override
     public String getServiceURL() {
-        //return ResourcesConstants.BASE_URL + "/token";
+        return ResourcesConstants.BASE_URL + "rtravel/list?user_id="+ Session.getInstance().getUser().getId();
 
-        return "http://trayectoseguro.azurewebsites.net/index.php/api/rtravel/list?user_id="+ Session.getInstance().getUser().getId();
+       // return "http://trayectoseguro.azurewebsites.net/index.php/api/rtravel/list?user_id="+ Session.getInstance().getUser().getId();
     }
 
     @Override

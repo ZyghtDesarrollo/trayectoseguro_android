@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.zyght.trayectoseguro.entity.Summary;
-import com.zyght.trayectoseguro.entity.Travel;
+import com.zyght.trayectoseguro.driver_services.DriverTracker;
 
 /**
  * Created by Arley Mauricio Duarte on 3/28/17.
@@ -24,45 +23,32 @@ public class SummaryDialogFragment extends DialogFragment{
         // Inflate the layout to use as dialog or embedded fragment
 
         View view = inflater.inflate(R.layout.summay_dialog, container, false);
+        TextView velocity = (TextView) view.findViewById(R.id.textView22);
+        TextView distance = (TextView) view.findViewById(R.id.textView12);
+        TextView duration = (TextView) view.findViewById(R.id.textView2);
+
+        final DriverTracker driverTracker =  DriverTracker.getInstance();
+
+        velocity.setText(String.valueOf(driverTracker.AverageSpeed()));
+        distance.setText(String.valueOf(driverTracker.getDistanceKM()));
+        duration.setText(String.valueOf(driverTracker.getTripTime()));
 
 
-        Summary summary = Travel.getInstance().getSummary();
-
-        if(summary != null){
-
-            TextView duration = (TextView) view.findViewById(R.id.textView2);
+        TextView maxSpeed = (TextView) view.findViewById(R.id.textViewMaxSpeed);
+        maxSpeed.setText(String.valueOf(driverTracker.getMaxSpeed()));
 
 
-            String sDuration = summary.getHours();
-            if (sDuration.length() > 6){
-                sDuration = sDuration.substring(0, 5);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
 
+                dismiss();
+                driverTracker.clear();
+
+                return true;
             }
+        });
 
-            duration.setText(sDuration);
-
-
-            TextView distance = (TextView) view.findViewById(R.id.textView12);
-
-
-
-            String sDistance = summary.getDistance();
-            if (sDistance.length() > 5){
-                sDistance = sDistance.substring(0, 4);
-
-            }
-
-            distance.setText(sDistance);
-
-            TextView velocity = (TextView) view.findViewById(R.id.textView22);
-
-            String sVelocity = summary.getVelocity();
-            if (sVelocity.length() > 5){
-                sVelocity = sDistance.substring(0, 4);
-
-            }
-
-            velocity.setText(sVelocity);
+        return view;
 
 
 
@@ -71,16 +57,6 @@ public class SummaryDialogFragment extends DialogFragment{
 
 
 
-        view.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-
-                dismiss();
-                return true;
-            }
-        });
-
-        return view;
-    }
 
     /** The system calls this only when creating the layout in a dialog. */
     @Override

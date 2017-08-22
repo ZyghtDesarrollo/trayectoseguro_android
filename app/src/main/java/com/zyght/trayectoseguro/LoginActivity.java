@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zyght.trayectoseguro.config.ResourcesConstants;
+import com.zyght.trayectoseguro.driver_services.DriverLocationService;
 import com.zyght.trayectoseguro.entity.Travel;
 import com.zyght.trayectoseguro.handler.LoginAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
@@ -183,10 +184,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String code = mCodeiew.getText().toString();
 
             if (BuildConfig.DEBUG) {
-                email= "Daniel 2";
+                email= "test";
                 password = "1234";
                 code = "3";
             }
+
+
+            Intent intent = new Intent(this, DriverLocationService.class);
+            startService(intent);
+
 
             LoginAPIHandler resourceHandler = new LoginAPIHandler(email, password, code);
             resourceHandler.setRequestHandle(this, this);

@@ -4,6 +4,7 @@ package com.zyght.trayectoseguro.handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zyght.trayectoseguro.config.ResourcesConstants;
 import com.zyght.trayectoseguro.entity.Question;
 import com.zyght.trayectoseguro.entity.QuestionBLL;
 import com.zyght.trayectoseguro.network.APIResourceHandler;
@@ -78,9 +79,9 @@ public class GetQuestionsAPIHandler extends APIResourceHandler {
 
     @Override
     public String getServiceURL() {
-        //return ResourcesConstants.BASE_URL + "/token";
+        return ResourcesConstants.BASE_URL + "/rquestion/list_actives";
 
-        return "http://trayectoseguro.azurewebsites.net/index.php/api/rquestion/list_actives";
+
     }
 
     @Override

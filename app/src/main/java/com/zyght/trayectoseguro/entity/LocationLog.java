@@ -11,6 +11,16 @@ public class LocationLog {
     private double longitude;
     private String date;
 
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    private long timeStamp;
+
 
     public double getLatitude() {
         return latitude;
