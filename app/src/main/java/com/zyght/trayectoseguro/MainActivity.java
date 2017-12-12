@@ -3,7 +3,6 @@ package com.zyght.trayectoseguro;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -11,16 +10,12 @@ import android.support.design.widget.BottomNavigationView;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.zyght.trayectoseguro.driver_services.DriverLocationService;
-import com.zyght.trayectoseguro.dummy.DummyContent;
 import com.zyght.trayectoseguro.entity.TravelItem;
-import com.zyght.trayectoseguro.session.Session;
 
-public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TravelFragment.OnListFragmentInteractionListener {
 
    // private TextView mTextMessage;
 
@@ -52,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        ItemFragment fra =   ItemFragment.newInstance(1);
+        TravelFragment fra =   TravelFragment.newInstance(1);
 
         fragmentTransaction.replace(R.id.content, fra);
         fragmentTransaction.commit();

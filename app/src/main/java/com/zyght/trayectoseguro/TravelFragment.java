@@ -10,14 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zyght.trayectoseguro.dummy.DummyContent;
-import com.zyght.trayectoseguro.dummy.DummyContent.DummyItem;
 import com.zyght.trayectoseguro.entity.TravelItem;
 import com.zyght.trayectoseguro.entity.TravelItemBLL;
 import com.zyght.trayectoseguro.handler.GetTravelsAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
-
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -25,7 +21,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ItemFragment extends Fragment implements ResponseActionDelegate{
+public class TravelFragment extends Fragment implements ResponseActionDelegate{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -37,13 +33,13 @@ public class ItemFragment extends Fragment implements ResponseActionDelegate{
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ItemFragment() {
+    public TravelFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ItemFragment newInstance(int columnCount) {
-        ItemFragment fragment = new ItemFragment();
+    public static TravelFragment newInstance(int columnCount) {
+        TravelFragment fragment = new TravelFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -101,7 +97,7 @@ public class ItemFragment extends Fragment implements ResponseActionDelegate{
 
     @Override
     public void didSuccessfully(String message) {
-        recyclerView.setAdapter(new MyItemRecyclerViewAdapter(TravelItemBLL.getInstance().getTravelItems(), mListener));
+        recyclerView.setAdapter(new TravelRecyclerViewAdapter(TravelItemBLL.getInstance().getTravelItems(), mListener));
     }
 
     @Override

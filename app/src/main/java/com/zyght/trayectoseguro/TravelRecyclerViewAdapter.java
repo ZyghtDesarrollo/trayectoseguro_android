@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.zyght.trayectoseguro.ItemFragment.OnListFragmentInteractionListener;
+import com.zyght.trayectoseguro.TravelFragment.OnListFragmentInteractionListener;
 import com.zyght.trayectoseguro.dummy.DummyContent.DummyItem;
 import com.zyght.trayectoseguro.entity.TravelItem;
 
@@ -17,12 +17,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
+public class TravelRecyclerViewAdapter extends RecyclerView.Adapter<TravelRecyclerViewAdapter.ViewHolder> {
 
     private final List<TravelItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyItemRecyclerViewAdapter(List<TravelItem> items, OnListFragmentInteractionListener listener) {
+    public TravelRecyclerViewAdapter(List<TravelItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

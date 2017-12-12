@@ -112,6 +112,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        //remove previous current location marker and add new one at current position
+        if (mCurrLocation != null) {
+            mCurrLocation.remove();
+        }
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mCurrLocation = mGoogleMap.addMarker(markerOptions);
+
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+
+        if(points.size() > 0){
+            LatLng lastPosition = points.get(points.size()-1);
+            float[] results = new float[1];
+            Location.distanceBetween(lastPosition.latitude, lastPosition.longitude, latLng.latitude, latLng.longitude, results);
+
+            Toast.makeText(this,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
+
+            if(results[0] > 10.0){
+                points.add(latLng);
+
+                updatePolyline();
+            }
+
+
+        }else{
+            points.add(latLng);
+
+        }
+
+
+
+        travel.addLocationLog(latLng);
+
+
+
+    }
+
     public void askPermissions(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -184,48 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     List<LatLng> points = new ArrayList<>();
 
-    @Override
-    public void onLocationChanged(Location location) {
-        //remove previous current location marker and add new one at current position
-        if (mCurrLocation != null) {
-            mCurrLocation.remove();
-        }
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocation = mGoogleMap.addMarker(markerOptions);
 
-
-
-
-        if(points.size() > 0){
-            LatLng lastPosition = points.get(points.size()-1);
-            float[] results = new float[1];
-            Location.distanceBetween(lastPosition.latitude, lastPosition.longitude, latLng.latitude, latLng.longitude, results);
-
-            Toast.makeText(this,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
-
-            if(results[0] > 10.0){
-                points.add(latLng);
-
-                updatePolyline();
-            }
-
-
-        }else{
-            points.add(latLng);
-
-        }
-
-
-
-        travel.addLocationLog(latLng);
-
-
-
-    }
 
     private static final LatLng AKL = new LatLng(-37.006254, 174.783018);
     private static final LatLng JFK = new LatLng(40.641051, -73.777485);

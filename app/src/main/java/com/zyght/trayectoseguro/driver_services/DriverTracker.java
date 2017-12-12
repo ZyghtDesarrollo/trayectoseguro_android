@@ -235,7 +235,7 @@ public class DriverTracker {
 
         }
 
-        if (maxSpeed < speed_kph && maxSpeed < 200.0) {
+        if (maxSpeed < speed_kph && speed_kph < 120.0) {
             maxSpeed = speed_kph;
             Log.i(TAG, "Max Speed:" + maxSpeed);
         }

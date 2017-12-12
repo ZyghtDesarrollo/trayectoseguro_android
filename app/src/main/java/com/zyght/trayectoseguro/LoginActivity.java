@@ -184,9 +184,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String code = mCodeiew.getText().toString();
 
             if (BuildConfig.DEBUG) {
-                email= "test";
-                password = "1234";
-                code = "3";
+              //  email= "test";
+               // password = "1234";
+                //code = "3";
             }
 
 
