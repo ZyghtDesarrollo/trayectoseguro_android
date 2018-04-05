@@ -1,13 +1,18 @@
-package com.zyght.trayectoseguro.entity;
+package com.zyght.trayectoseguro.driver_services;
+
+import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.zyght.trayectoseguro.entity.Answer;
+import com.zyght.trayectoseguro.entity.LocationLog;
+import com.zyght.trayectoseguro.entity.Summary;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by Arley Mauricio Duarte on 3/21/17.
@@ -15,7 +20,9 @@ import java.util.UUID;
 
 public class Travel {
 
+    private static  String TAG = "Travel";
 
+    private double maxSpeed = 0;
     private Summary summary;
 
     public Summary getSummary() {
@@ -48,6 +55,7 @@ public class Travel {
     }
 
     private ArrayList<LocationLog> locationLogs = new ArrayList<>();
+    private ArrayList<Location> locations = new ArrayList<>();
 
     public ArrayList<Answer> getAnswers() {
         return answers;
@@ -56,21 +64,28 @@ public class Travel {
     private ArrayList<Answer> answers = new ArrayList<>();
 
 
-
-
     public ArrayList<LocationLog> getLocationLogs() {
         return locationLogs;
     }
 
 
-    public void addAnswer(Answer answer){
+    public void addAnswer(Answer answer) {
         answers.add(answer);
     }
 
-    public void addLocationLog(LatLng latLng) {
+
+
+    protected void addLocationLog(Location location, double speed) {
+
+        double latitude = location.getLatitude();
+
+        // Get longitude of the current location
+        double longitude = location.getLongitude();
+
+
         LocationLog log = new LocationLog();
-        log.setLatitude(latLng.latitude);
-        log.setLongitude(latLng.longitude);
+        log.setLatitude(latitude);
+        log.setLongitude(longitude);
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -82,11 +97,26 @@ public class Travel {
         log.setTimeStamp(System.currentTimeMillis());
         log.setDate(reportDate);
 
+        log.setSpeed(speed);
+
+        Log.i(TAG, "addLocationLog: Speed "+speed+", Latitude {"+latitude+"} Longitude {"+longitude+"}");
+
         locationLogs.add(log);
     }
 
+
+
+
+
+
+
     public void clear() {
         locationLogs.clear();
+        locations.clear();
         answers.clear();
+
     }
+
+
+
 }

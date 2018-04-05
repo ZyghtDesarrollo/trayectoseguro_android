@@ -21,6 +21,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name=".ArchLifecycleApp"
         android:theme="@style/AppTheme">
 
         <!--
@@ -35,9 +36,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/app_name" />
         <activity
             android:name=".SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -57,11 +55,12 @@
             android:label="@string/title_activity_summary"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" />
-        <activity
             android:name=".SurveyActivity"
             android:label="@string/title_survey" />
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" />
 
         <service android:name=".driver_services.DriverLocationService"  />
     </application>

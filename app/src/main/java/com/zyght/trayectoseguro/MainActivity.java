@@ -17,7 +17,7 @@ import com.zyght.trayectoseguro.entity.TravelItem;
 
 public class MainActivity extends AppCompatActivity implements TravelFragment.OnListFragmentInteractionListener {
 
-   // private TextView mTextMessage;
+    // private TextView mTextMessage;
 
     private SupportMapFragment mSupportMapFragment;
 
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements TravelFragment.On
 
 
 
-       // mTextMessage = (TextView) findViewById(R.id.message);
+        // mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 

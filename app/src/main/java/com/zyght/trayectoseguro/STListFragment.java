@@ -39,7 +39,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.zyght.trayectoseguro.config.ResourcesConstants;
-import com.zyght.trayectoseguro.entity.Travel;
+import com.zyght.trayectoseguro.driver_services.Travel;
 import com.zyght.trayectoseguro.handler.AddTravelAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
 
@@ -297,7 +297,7 @@ public class STListFragment extends Fragment implements LocationListener, Google
                     points.add(latLng);
                     updatePolyline();
 
-                    travel.addLocationLog(latLng);
+                    //travel.addLocation(location);
 
                 }
 

@@ -8,10 +8,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -19,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,15 +40,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.zyght.trayectoseguro.config.ResourcesConstants;
 import com.zyght.trayectoseguro.driver_services.DriverTracker;
 import com.zyght.trayectoseguro.driver_services.IDriverObserver;
 import com.zyght.trayectoseguro.entity.Summary;
-import com.zyght.trayectoseguro.entity.Travel;
+import com.zyght.trayectoseguro.driver_services.Travel;
 import com.zyght.trayectoseguro.handler.AddTravelAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
+import com.zyght.trayectoseguro.session.Session;
 
 import org.json.JSONObject;
 
@@ -61,11 +62,15 @@ import static android.content.Context.LOCATION_SERVICE;
  */
 
 public class MapViewFragment extends Fragment implements LocationListener, IDriverObserver, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResponseActionDelegate {
+
+    private static  String TAG = "TAG";
+    private DriverTracker driverTracker =  DriverTracker.getInstance();
+
+
     MapView mMapView;
     private GoogleMap googleMap;
     private Context context;
     LatLng latLng;
-    private Travel travel;
 
     private Polyline mMutablePolyline;
     List<LatLng> points = new ArrayList<>();
@@ -75,6 +80,11 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
     private  AppCompatButton button;
     GoogleApiClient mGoogleApiClient;
 
+    private Travel travel = Travel.getInstance();
+
+
+    private MediaPlayer mediaPlayer;
+
 
     private static final int INITIAL_STROKE_WIDTH_PX = 15;
 
@@ -82,7 +92,12 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_maps_f, container, false);
 
+
+
+        Log.i(TAG, "SpeedLimit "+Session.getInstance().getUser().getSpeedLimit());
+
         driverTracker.setContext(context);
+        driverTracker.setSpeedLimit(Session.getInstance().getUser().getSpeedLimit());
 
 
         mMapView = (MapView) rootView.findViewById(R.id.map);
@@ -91,7 +106,7 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
         mMapView.onResume(); // needed to get the map to display immediately
 
         context = getActivity().getBaseContext();
-
+        mediaPlayer = MediaPlayer.create(context, R.raw.speed_alarm);
 
 
 
@@ -120,14 +135,6 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
                     }
                 }
 
-                /*
-                LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-*/
 
                 buildGoogleApiClient();
 
@@ -145,8 +152,9 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
                 ResourcesConstants.startTravel = false;
 
                 if(button.getText().equals(getString(R.string.start))){
-                    travel = Travel.getInstance();
+
                     driverTracker.setTripStatus(DriverTracker.ON_TRIP);
+                    driverTracker.clear();
 
                     Intent i = new Intent(getActivity(), SurveyActivity.class);
                     startActivity(i);
@@ -158,6 +166,7 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
                     //startActivity(i);
                     button.setText(getString(R.string.start));
                     driverTracker.setTripStatus(DriverTracker.CLOSED_TRIP);
+
                     reportOnClick();
 
                 }
@@ -176,7 +185,7 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
     }
 
     private void reportOnClick() {
-
+        stopAlarm();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 // Add the buttons
@@ -207,7 +216,25 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
 
     }
 
+
+    public void notifySpeeding() {
+
+        Log.i(TAG, "notifySpeeding Sound");
+
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+
+        }
+    }
+
+    public void stopAlarm() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
     private void send(){
+
         Gson gson = new Gson();
 
         String answers = gson.toJson(travel.getAnswers());
@@ -289,7 +316,7 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
         mMapView.onLowMemory();
     }
 
-    DriverTracker driverTracker =  DriverTracker.getInstance();
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -304,69 +331,22 @@ public class MapViewFragment extends Fragment implements LocationListener, IDriv
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocation = googleMap.addMarker(markerOptions);
 
-        travel = Travel.getInstance();
+
 
         if(latLng !=null){
-            travel.addLocationLog(latLng);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
 
 
         if(ResourcesConstants.startTravel){
 
-
-            /*
-
-
-            if(points.size() > 0){
-                LatLng lastPosition = points.get(points.size()-1);
-                float[] results = new float[1];
-                Location.distanceBetween(lastPosition.latitude, lastPosition.longitude, latLng.latitude, latLng.longitude, results);
-                double speed = driverTracker.speed(travel.getLocationLogs());
-                //Toast.makeText(context,"Location Changed :"+results[0],Toast.LENGTH_SHORT).show();
-
-                if(results[0] > 1.0){
-
-                    if(latLng !=null){
-                        points.add(latLng);
-                        updatePolyline();
-
-                    }
-
-
-                }
-
-
-            }else{
-                points.add(latLng);
-
-            }
-
-            */
-
         }
 
 
 
     }
 
-    private void updatePolyline(){
 
-        mMutablePolyline =   googleMap.addPolyline(new PolylineOptions()
-                // .add(LHR, AKL, LAX, JFK, LHR)
-                .width(INITIAL_STROKE_WIDTH_PX)
-                .color(Color.RED)
-                .geodesic(true)
-        );
-
-
-
-        //points.add(AKL);
-        //points.add(JFK);
-        //points.add(LAX);
-
-        mMutablePolyline.setPoints(points);
-        // mMutablePolyline.notify();
-    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

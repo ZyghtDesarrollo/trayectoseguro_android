@@ -7,6 +7,7 @@ package com.zyght.trayectoseguro.entity;
 public class User {
     private String id;
     private String username;
+    private int speed_limit;
 
     public String getId() {
         return id;
@@ -22,5 +23,9 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getSpeedLimit() {
+        return speed_limit;
     }
 }

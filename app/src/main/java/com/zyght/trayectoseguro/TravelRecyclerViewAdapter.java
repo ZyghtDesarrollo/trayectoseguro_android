@@ -1,6 +1,7 @@
 package com.zyght.trayectoseguro;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,11 @@ import java.util.List;
  */
 public class TravelRecyclerViewAdapter extends RecyclerView.Adapter<TravelRecyclerViewAdapter.ViewHolder> {
 
+    private static final String TAG ="TravelRecycler" ;
     private final List<TravelItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final TravelClick mListener;
 
-    public TravelRecyclerViewAdapter(List<TravelItem> items, OnListFragmentInteractionListener listener) {
+    public TravelRecyclerViewAdapter(List<TravelItem> items, TravelClick listener) {
         mValues = items;
         mListener = listener;
     }
@@ -48,7 +50,9 @@ public class TravelRecyclerViewAdapter extends RecyclerView.Adapter<TravelRecycl
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                   // mListener.onListFragmentInteraction(holder.mItem);
+                    Log.i(TAG, "onBindViewHolder setOnClickListener");
+                    mListener.onClick(holder.mItem);
                 }
             }
         });
@@ -72,11 +76,21 @@ public class TravelRecyclerViewAdapter extends RecyclerView.Adapter<TravelRecycl
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
             mNameView = (TextView) view.findViewById(R.id.name);
+            mView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    mListener.onClick(mItem);
+                }
+            });
         }
 
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+
+
+    public interface TravelClick{
+        void onClick(TravelItem travelItem);
     }
 }

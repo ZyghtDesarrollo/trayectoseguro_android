@@ -1,27 +1,14 @@
 package com.zyght.trayectoseguro.entity;
 
-import java.util.UUID;
-
 /**
- * Created by Arley Mauricio Duarte on 3/21/17.
+ * Created by arley on 4/3/18.
  */
 
-public class LocationLog {
+public class PhoneUsageLog {
     private double latitude;
     private double longitude;
-    private double speed;
+
     private String date;
-
-    public long getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    private long timeStamp;
-
 
     public double getLatitude() {
         return latitude;
@@ -45,13 +32,5 @@ public class LocationLog {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
     }
 }

@@ -1,5 +1,7 @@
 package com.zyght.trayectoseguro;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -9,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.zyght.trayectoseguro.driver_services.DriverTracker;
 import com.zyght.trayectoseguro.entity.TravelItem;
 import com.zyght.trayectoseguro.entity.TravelItemBLL;
 import com.zyght.trayectoseguro.handler.GetTravelsAPIHandler;
@@ -21,7 +25,7 @@ import com.zyght.trayectoseguro.network.ResponseActionDelegate;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class TravelFragment extends Fragment implements ResponseActionDelegate{
+public class TravelFragment extends Fragment implements ResponseActionDelegate, TravelRecyclerViewAdapter.TravelClick{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -97,11 +101,39 @@ public class TravelFragment extends Fragment implements ResponseActionDelegate{
 
     @Override
     public void didSuccessfully(String message) {
-        recyclerView.setAdapter(new TravelRecyclerViewAdapter(TravelItemBLL.getInstance().getTravelItems(), mListener));
+        recyclerView.setAdapter(new TravelRecyclerViewAdapter(TravelItemBLL.getInstance().getTravelItems(), this));
     }
 
     @Override
     public void didNotSuccessfully(String message) {
+
+    }
+
+    @Override
+    public void onClick(TravelItem travelItem) {
+        Toast.makeText(this.getActivity(), "ID de Viaje: "+travelItem.getId(), Toast.LENGTH_LONG).show();
+
+        DriverTracker.getInstance().setCurrentTravelItem(travelItem);
+
+        showDialog();
+
+
+    }
+
+    public void showDialog() {
+        FragmentManager fragmentManager = getFragmentManager();
+        SummaryDialogFragment newFragment = new SummaryDialogFragment();
+
+
+
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        // For a little polish, specify a transition animation
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        // To make it fullscreen, use the 'content' root view as the container
+        // for the fragment, which is always the root view for the activity
+        transaction.add(android.R.id.content, newFragment)
+                .addToBackStack(null).commit();
 
     }
 

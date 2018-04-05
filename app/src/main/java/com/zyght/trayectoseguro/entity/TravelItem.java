@@ -8,6 +8,12 @@ public class TravelItem {
     private String id;
     private String date;
     private String appuser;
+    private String max_speed;
+    private String average_speed;
+    private String distance;
+    private String duration;
+    private String speed_violation;
+
 
     public String getId() {
         return id;
@@ -31,5 +37,25 @@ public class TravelItem {
 
     public void setAppuser(String appuser) {
         this.appuser = appuser;
+    }
+
+    public String getMaxSpeed() {
+        return max_speed;
+    }
+
+    public String getAverageSpeed() {
+        return average_speed;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public String getSpeedViolation() {
+        return speed_violation;
     }
 }

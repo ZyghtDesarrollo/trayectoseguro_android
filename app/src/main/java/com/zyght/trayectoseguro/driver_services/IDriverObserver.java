@@ -8,4 +8,6 @@ public interface IDriverObserver {
 
      void updateSpeed(Double speed);
      void updateTripStatus();
+     void notifySpeeding();
+     void stopAlarm();
 }

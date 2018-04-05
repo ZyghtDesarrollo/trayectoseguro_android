@@ -3,6 +3,7 @@ package com.zyght.trayectoseguro.handler;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.zyght.trayectoseguro.config.ResourcesConstants;
 import com.zyght.trayectoseguro.driver_services.DriverTracker;
 import com.zyght.trayectoseguro.network.APIResourceHandler;
@@ -29,6 +30,8 @@ public class AddTravelAPIHandler extends APIResourceHandler {
 
 
     public AddTravelAPIHandler(String answers, String travel_logs) {
+
+
         this.answers = answers;
         this.travel_logs = travel_logs;
 
@@ -47,7 +50,17 @@ public class AddTravelAPIHandler extends APIResourceHandler {
         nameValuePairs.add(new BasicNameValuePair("average_speed", DriverTracker.getInstance().AverageSpeed()+""));
         nameValuePairs.add(new BasicNameValuePair("duration", DriverTracker.getInstance().getTripTime()));
 
-        Log.d(TAG, travel_logs);
+        nameValuePairs.add(new BasicNameValuePair("speeding", DriverTracker.getInstance().getSpeeding()));
+
+
+        Gson gson = new Gson();
+
+        String phoneUsageLogs = gson.toJson(DriverTracker.getInstance().getPhoneUsageLogs());
+        Log.d(TAG, "phoneUsageLogs:"+phoneUsageLogs);
+
+        nameValuePairs.add(new BasicNameValuePair("phone_usage_logs", phoneUsageLogs));
+
+        Log.d(TAG, nameValuePairs.toString());
 
         return nameValuePairs;
     }

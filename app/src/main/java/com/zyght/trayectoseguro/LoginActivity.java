@@ -25,14 +25,11 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zyght.trayectoseguro.config.ResourcesConstants;
 import com.zyght.trayectoseguro.driver_services.DriverLocationService;
-import com.zyght.trayectoseguro.entity.Travel;
 import com.zyght.trayectoseguro.handler.LoginAPIHandler;
 import com.zyght.trayectoseguro.network.ResponseActionDelegate;
 
@@ -103,7 +100,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
 
 
-
+        if (BuildConfig.DEBUG) {
+            mEmailView.setText("test");
+            mPasswordView.setText("1234");
+            mCodeiew.setText("3");
+        }
 
     }
 
@@ -183,11 +184,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             String code = mCodeiew.getText().toString();
 
-            if (BuildConfig.DEBUG) {
-              //  email= "test";
-               // password = "1234";
-                //code = "3";
-            }
+
 
 
             Intent intent = new Intent(this, DriverLocationService.class);

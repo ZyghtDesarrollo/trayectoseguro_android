@@ -3,17 +3,20 @@ package com.zyght.trayectoseguro.driver_services;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
-import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.zyght.trayectoseguro.entity.PhoneUsageLog;
+import com.zyght.trayectoseguro.entity.TravelItem;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,11 +32,9 @@ public class DriverTracker {
     private static final int STROKE_WIDTH_ROUTE_LINE_PX = 15;
 
 
-    public static final int READY_FOR_SURVEY = 0;
-    public static final int STARTING_NEW_TRIP = 1;
-    public static final int REPORTED_SURVEY = 2;
+
     public static final int ON_TRIP = 3;
-    public static final int END_TRIP = 4;
+
     public static final int CLOSED_TRIP = 5;
     private static final String TAG = "DriverTracker";
 
@@ -42,7 +43,7 @@ public class DriverTracker {
 
     private Context context;
 
-    private MediaPlayer mp;
+
     private ArrayList<Double> speedRecords = new ArrayList<>();
     private ArrayList<Double> distanceRecords = new ArrayList<>();
     private static final DriverTracker ourInstance = new DriverTracker();
@@ -50,7 +51,7 @@ public class DriverTracker {
     private final Object MUTEX = new Object();
     private ArrayList<IDriverObserver> driverObservers = new ArrayList<>();
     private double tripTimeSeconds = 0;
-    private int speedingCount = 0;
+
     private double maxSpeed = 0;
 
     private ArrayList<Location> locations = new ArrayList<>();
@@ -84,16 +85,31 @@ public class DriverTracker {
         }
     }
 
-    public void updateTripStatus() {
 
 
-        Log.i(TAG, "tripStatus:" + tripStatus);
+
+    public void notifySpeeding() {
+
+
+        Log.i(TAG, "notifySpeeding:" + tripStatus);
 
         for (IDriverObserver obj : driverObservers) {
-            obj.updateTripStatus();
+            obj.notifySpeeding();
         }
 
     }
+
+    public void stopAlarm() {
+
+
+        Log.i(TAG, "notifySpeeding:" + tripStatus);
+
+        for (IDriverObserver obj : driverObservers) {
+            obj.stopAlarm();
+        }
+
+    }
+
 
 
     public int getTripStatus() {
@@ -111,11 +127,12 @@ public class DriverTracker {
     }
 
 
-    public boolean isOverSpeedLimit(double speed_kph) {
+    private boolean isOverSpeedLimit(double speed_kph) {
         boolean over = false;
 
         if (speed_kph > SPEED_LIMIT) {
-            exceedSpeedLimits();
+            addSpeedingCount();
+            notifySpeeding();
             over = true;
 
         } else {
@@ -130,20 +147,10 @@ public class DriverTracker {
         // mp = MediaPlayer.create(context, R.raw.speed_alarm);
     }
 
-    private void exceedSpeedLimits() {
 
-        if (!mp.isPlaying()) {
-            mp.start();
-            speedingCount++;
-        }
+    private double currentLatitude =  0.0;
+    private double currentLongitude =  0.0;
 
-    }
-
-    private void stopAlarm() {
-        if (mp.isPlaying()) {
-            mp.pause();
-        }
-    }
 
 
     protected void addLocation(Location location) {
@@ -151,6 +158,16 @@ public class DriverTracker {
             locations.add(location);
             updateRoute(location);
             updateSpeed();
+
+            double speed =getSpeed();
+
+            isOverSpeedLimit(speed);
+
+
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+
+            Travel.getInstance().addLocationLog(location,speed);
 
         }
     }
@@ -238,6 +255,7 @@ public class DriverTracker {
         if (maxSpeed < speed_kph && speed_kph < 120.0) {
             maxSpeed = speed_kph;
             Log.i(TAG, "Max Speed:" + maxSpeed);
+
         }
         return speed_kph;
     }
@@ -270,6 +288,10 @@ public class DriverTracker {
         for (IDriverObserver obj : driverObservers) {
             obj.updateSpeed(0.d);
         }
+
+        backgroundCount = 0;
+        backLogs.clear();
+        currentTravelItem = null;
 
     }
 
@@ -361,26 +383,72 @@ public class DriverTracker {
     }
 
 
-    public int getSpeeding() {
-        return speedingCount;
-    }
 
-    public String getIncidents() {
-        return "0";
-    }
 
-    public String getDrowsiness() {
-        return "0";
-    }
 
-    public String getStopAndThink() {
-        return "0";
-    }
 
     public String getMaxSpeed() {
         // return String.valueOf(maxSpeed);
 
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(maxSpeed);
+    }
+
+
+    private int speedingCount = 0;
+
+    private void addSpeedingCount() {
+        speedingCount++;
+        Log.i(TAG, "addSpeedingCount"+speedingCount);
+
+    }
+
+    public String getSpeeding() {
+        return String.valueOf(speedingCount);
+    }
+
+
+    private ArrayList<PhoneUsageLog>  backLogs = new ArrayList<>();
+
+    private int backgroundCount = 0;
+
+    public void addBackgroundCount() {
+
+        if (tripStatus == ON_TRIP) {
+
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date today = Calendar.getInstance().getTime();
+
+            String reportDate = df.format(today);
+
+            backgroundCount++;
+
+            Log.i(TAG, "addBackgroundCount:"+ backgroundCount);
+
+            PhoneUsageLog log = new PhoneUsageLog();
+            log.setDate(reportDate);
+            log.setLatitude(currentLatitude);
+            log.setLongitude(currentLongitude);
+
+            backLogs.add(log);
+        }
+
+
+    }
+
+
+    public ArrayList<PhoneUsageLog> getPhoneUsageLogs(){
+        return backLogs;
+    }
+
+    TravelItem currentTravelItem;
+    public void setCurrentTravelItem(TravelItem currentTravelItem) {
+        this.currentTravelItem = currentTravelItem;
+
+    }
+
+    public TravelItem getCurrentTravelItem() {
+        return currentTravelItem;
     }
 }

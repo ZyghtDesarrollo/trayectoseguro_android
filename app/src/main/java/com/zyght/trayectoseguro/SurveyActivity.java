@@ -11,9 +11,8 @@ import com.zyght.trayectoseguro.driver_services.DriverTracker;
 import com.zyght.trayectoseguro.entity.Answer;
 import com.zyght.trayectoseguro.entity.Question;
 import com.zyght.trayectoseguro.entity.QuestionBLL;
-import com.zyght.trayectoseguro.entity.Travel;
+import com.zyght.trayectoseguro.driver_services.Travel;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 public class SurveyActivity extends AppCompatActivity {
